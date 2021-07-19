@@ -1368,7 +1368,8 @@ class Airflow(AirflowBaseView):
         ]
     )
     @action_logging
-    def run(self):
+    @provide_session
+    def run(self, session=None):
         """Runs Task Instance."""
         dag_id = request.form.get('dag_id')
         task_id = request.form.get('task_id')
@@ -1433,6 +1434,17 @@ class Airflow(AirflowBaseView):
             ignore_ti_state=ignore_ti_state,
         )
         executor.heartbeat()
+
+        # Process the executor event buffer so that we can specify the external_executor_id.
+        event_buffer = executor.get_event_buffer()
+        for ti_key, (state, external_executor_id) in event_buffer.items():
+            if state == State.QUEUED and ti_key == ti.key:
+                ti.external_executor_id = external_executor_id
+            else:
+                flash(f"state: {str(state)} and ti_key: {str(ti_key)} while ti.key: {str(ti.key)}")
+                return redirect(origin)
+            session.merge(ti)
+
         flash(f"Sent {ti} to the message queue, it should start any moment now.")
         return redirect(origin)
 
