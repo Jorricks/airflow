@@ -92,6 +92,20 @@ export interface paths {
       };
     };
   };
+  "/dags/{dag_id}/setTaskInstanceNote": {
+    /**
+     * Update the manual user note of a Task Instance.
+     *
+     * *New in version 2.5.0*
+     */
+    post: operations["set_task_instance_note"];
+    parameters: {
+      path: {
+        /** The DAG ID. */
+        dag_id: components["parameters"]["DAGID"];
+      };
+    };
+  };
   "/dags/{dag_id}/updateTaskInstancesState": {
     /** Updates the state for multiple task instances simultaneously. */
     post: operations["post_set_task_instances_state"];
@@ -158,6 +172,22 @@ export interface paths {
      * *New in version 2.4.0*
      */
     get: operations["get_upstream_dataset_events"];
+    parameters: {
+      path: {
+        /** The DAG ID. */
+        dag_id: components["parameters"]["DAGID"];
+        /** The DAG run ID. */
+        dag_run_id: components["parameters"]["DAGRunID"];
+      };
+    };
+  };
+  "/dags/{dag_id}/dagRuns/{dag_run_id}/setNote": {
+    /**
+     * Update the manual user note of a DagRun.
+     *
+     * *New in version 2.5.0*
+     */
+    post: operations["set_dag_run_note"];
     parameters: {
       path: {
         /** The DAG ID. */
@@ -1012,6 +1042,10 @@ export interface components {
     DagWarningCollection: {
       import_errors?: components["schemas"]["DagWarning"][];
     } & components["schemas"]["CollectionInfo"];
+    SetDagRunNote: {
+      /** @description The custom note to set for this Task Instance. */
+      user_note?: string;
+    };
     /** @description Log of user operations via CLI or Web UI. */
     EventLog: {
       /** @description The event log ID */
@@ -1732,6 +1766,14 @@ export interface components {
        * @enum {string}
        */
       new_state?: "success" | "failed";
+    };
+    SetTaskInstanceNote: {
+      /** @description The task instance's DAG run ID. */
+      dag_run_id?: string;
+      /** @description The Task ID */
+      task_id?: string;
+      /** @description The custom note to set for this Task Instance. */
+      user_note?: string;
     };
     ListDagRunsForm: {
       /**
@@ -2538,6 +2580,36 @@ export interface operations {
       };
     };
   };
+  /**
+   * Update the manual user note of a Task Instance.
+   *
+   * *New in version 2.5.0*
+   */
+  set_task_instance_note: {
+    parameters: {
+      path: {
+        /** The DAG ID. */
+        dag_id: components["parameters"]["DAGID"];
+      };
+    };
+    responses: {
+      /** Success. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["TaskInstance"];
+        };
+      };
+      401: components["responses"]["Unauthenticated"];
+      403: components["responses"]["PermissionDenied"];
+      404: components["responses"]["NotFound"];
+    };
+    /** Parameters of set Task Instance note. */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SetTaskInstanceNote"];
+      };
+    };
+  };
   /** Updates the state for multiple task instances simultaneously. */
   post_set_task_instances_state: {
     parameters: {
@@ -2805,6 +2877,39 @@ export interface operations {
       401: components["responses"]["Unauthenticated"];
       403: components["responses"]["PermissionDenied"];
       404: components["responses"]["NotFound"];
+    };
+  };
+  /**
+   * Update the manual user note of a DagRun.
+   *
+   * *New in version 2.5.0*
+   */
+  set_dag_run_note: {
+    parameters: {
+      path: {
+        /** The DAG ID. */
+        dag_id: components["parameters"]["DAGID"];
+        /** The DAG run ID. */
+        dag_run_id: components["parameters"]["DAGRunID"];
+      };
+    };
+    responses: {
+      /** Success. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DAGRun"];
+        };
+      };
+      400: components["responses"]["BadRequest"];
+      401: components["responses"]["Unauthenticated"];
+      403: components["responses"]["PermissionDenied"];
+      404: components["responses"]["NotFound"];
+    };
+    /** Parameters of set DagRun note. */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SetDagRunNote"];
+      };
     };
   };
   /** List log entries from event log. */
@@ -4148,6 +4253,7 @@ export type UpdateDagRunState = CamelCasedPropertiesDeep<components['schemas']['
 export type DAGRunCollection = CamelCasedPropertiesDeep<components['schemas']['DAGRunCollection']>;
 export type DagWarning = CamelCasedPropertiesDeep<components['schemas']['DagWarning']>;
 export type DagWarningCollection = CamelCasedPropertiesDeep<components['schemas']['DagWarningCollection']>;
+export type SetDagRunNote = CamelCasedPropertiesDeep<components['schemas']['SetDagRunNote']>;
 export type EventLog = CamelCasedPropertiesDeep<components['schemas']['EventLog']>;
 export type EventLogCollection = CamelCasedPropertiesDeep<components['schemas']['EventLogCollection']>;
 export type ImportError = CamelCasedPropertiesDeep<components['schemas']['ImportError']>;
@@ -4199,6 +4305,7 @@ export type VersionInfo = CamelCasedPropertiesDeep<components['schemas']['Versio
 export type ClearDagRun = CamelCasedPropertiesDeep<components['schemas']['ClearDagRun']>;
 export type ClearTaskInstances = CamelCasedPropertiesDeep<components['schemas']['ClearTaskInstances']>;
 export type UpdateTaskInstancesState = CamelCasedPropertiesDeep<components['schemas']['UpdateTaskInstancesState']>;
+export type SetTaskInstanceNote = CamelCasedPropertiesDeep<components['schemas']['SetTaskInstanceNote']>;
 export type ListDagRunsForm = CamelCasedPropertiesDeep<components['schemas']['ListDagRunsForm']>;
 export type ListTaskInstanceForm = CamelCasedPropertiesDeep<components['schemas']['ListTaskInstanceForm']>;
 export type ScheduleInterval = CamelCasedPropertiesDeep<components['schemas']['ScheduleInterval']>;
@@ -4233,6 +4340,7 @@ export type GetDagVariables = CamelCasedPropertiesDeep<operations['get_dag']['pa
 export type DeleteDagVariables = CamelCasedPropertiesDeep<operations['delete_dag']['parameters']['path']>;
 export type PatchDagVariables = CamelCasedPropertiesDeep<operations['patch_dag']['parameters']['path'] & operations['patch_dag']['parameters']['query'] & operations['patch_dag']['requestBody']['content']['application/json']>;
 export type PostClearTaskInstancesVariables = CamelCasedPropertiesDeep<operations['post_clear_task_instances']['parameters']['path'] & operations['post_clear_task_instances']['requestBody']['content']['application/json']>;
+export type SetTaskInstanceNoteVariables = CamelCasedPropertiesDeep<operations['set_task_instance_note']['parameters']['path'] & operations['set_task_instance_note']['requestBody']['content']['application/json']>;
 export type PostSetTaskInstancesStateVariables = CamelCasedPropertiesDeep<operations['post_set_task_instances_state']['parameters']['path'] & operations['post_set_task_instances_state']['requestBody']['content']['application/json']>;
 export type GetDagRunsVariables = CamelCasedPropertiesDeep<operations['get_dag_runs']['parameters']['path'] & operations['get_dag_runs']['parameters']['query']>;
 export type PostDagRunVariables = CamelCasedPropertiesDeep<operations['post_dag_run']['parameters']['path'] & operations['post_dag_run']['requestBody']['content']['application/json']>;
@@ -4242,6 +4350,7 @@ export type DeleteDagRunVariables = CamelCasedPropertiesDeep<operations['delete_
 export type UpdateDagRunStateVariables = CamelCasedPropertiesDeep<operations['update_dag_run_state']['parameters']['path'] & operations['update_dag_run_state']['requestBody']['content']['application/json']>;
 export type ClearDagRunVariables = CamelCasedPropertiesDeep<operations['clear_dag_run']['parameters']['path'] & operations['clear_dag_run']['requestBody']['content']['application/json']>;
 export type GetUpstreamDatasetEventsVariables = CamelCasedPropertiesDeep<operations['get_upstream_dataset_events']['parameters']['path']>;
+export type SetDagRunNoteVariables = CamelCasedPropertiesDeep<operations['set_dag_run_note']['parameters']['path'] & operations['set_dag_run_note']['requestBody']['content']['application/json']>;
 export type GetEventLogsVariables = CamelCasedPropertiesDeep<operations['get_event_logs']['parameters']['query']>;
 export type GetEventLogVariables = CamelCasedPropertiesDeep<operations['get_event_log']['parameters']['path']>;
 export type GetImportErrorsVariables = CamelCasedPropertiesDeep<operations['get_import_errors']['parameters']['query']>;

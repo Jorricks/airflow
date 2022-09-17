@@ -163,8 +163,15 @@ class DagRunsBatchFormSchema(Schema):
     end_date_lte = fields.DateTime(load_default=None, validate=validate_istimezone)
 
 
+class SetDagRunNoteFormSchema(Schema):
+    """Schema for handling the request of clearing a DAG run"""
+
+    user_note = fields.String(allow_none=True, validate=validate.Length(max=1000))
+
+
 dagrun_schema = DAGRunSchema()
 dagrun_collection_schema = DAGRunCollectionSchema()
 set_dagrun_state_form_schema = SetDagRunStateFormSchema()
 clear_dagrun_form_schema = ClearDagRunStateFormSchema()
 dagruns_batch_form_schema = DagRunsBatchFormSchema()
+set_dagrun_note_form_schema = SetDagRunNoteFormSchema()

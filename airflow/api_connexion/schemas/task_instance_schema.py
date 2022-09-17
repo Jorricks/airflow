@@ -187,6 +187,14 @@ class TaskInstanceReferenceCollectionSchema(Schema):
     task_instances = fields.List(fields.Nested(TaskInstanceReferenceSchema))
 
 
+class SetTaskInstanceNoteFormSchema(Schema):
+    """Schema for settings a note for a TaskInstance"""
+
+    dag_run_id = fields.String(allow_none=False)
+    task_id = fields.String(allow_none=False)
+    user_note = fields.String(allow_none=True, validate=validate.Length(max=1000))
+
+
 task_instance_schema = TaskInstanceSchema()
 task_instance_collection_schema = TaskInstanceCollectionSchema()
 task_instance_batch_form = TaskInstanceBatchFormSchema()
@@ -194,3 +202,4 @@ clear_task_instance_form = ClearTaskInstanceFormSchema()
 set_task_instance_state_form = SetTaskInstanceStateFormSchema()
 task_instance_reference_schema = TaskInstanceReferenceSchema()
 task_instance_reference_collection_schema = TaskInstanceReferenceCollectionSchema()
+set_task_instance_note_form_schema = SetTaskInstanceNoteFormSchema()

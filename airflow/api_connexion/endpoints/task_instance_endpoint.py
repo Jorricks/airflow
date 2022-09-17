@@ -33,6 +33,7 @@ from airflow.api_connexion.schemas.task_instance_schema import (
     TaskInstanceCollection,
     TaskInstanceReferenceCollection,
     clear_task_instance_form,
+    set_task_instance_note_form_schema,
     set_task_instance_state_form,
     task_instance_batch_form,
     task_instance_collection_schema,
@@ -545,3 +546,36 @@ def post_set_task_instances_state(*, dag_id: str, session: Session = NEW_SESSION
         session=session,
     )
     return task_instance_reference_collection_schema.dump(TaskInstanceReferenceCollection(task_instances=tis))
+
+
+@security.requires_access(
+    [
+        (permissions.ACTION_CAN_READ, permissions.RESOURCE_DAG),
+        (permissions.ACTION_CAN_EDIT, permissions.RESOURCE_DAG_RUN),
+    ],
+)
+@provide_session
+def set_task_instance_note(*, dag_id: str, session: Session = NEW_SESSION) -> APIResponse:
+    """Set the note for a dag run."""
+    try:
+        post_body = set_task_instance_note_form_schema.load(get_json_request_dict())
+    except ValidationError as err:
+        raise BadRequest(detail=str(err))
+
+    ti: TI | None = (
+        session.query(TI)
+        .filter(TI.dag_id == dag_id)
+        .filter(TI.run_id == post_body["dag_run_id"])
+        .filter(TI.task_id == post_body["task_id"])
+        .one_or_none()
+    )
+    if ti is None:
+        error_message = (
+            f'Task Instance not found for dag_id={dag_id}, '
+            f'run_id={post_body["dag_run_id"]}, task_id={post_body["task_id"]}'
+        )
+        raise NotFound(error_message)
+
+    ti.user_note = post_body["user_note"]
+    session.commit()
+    return task_instance_schema.dump(ti)

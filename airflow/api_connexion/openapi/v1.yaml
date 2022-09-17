@@ -585,6 +585,41 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /dags/{dag_id}/setTaskInstanceNote:
+    parameters:
+      - $ref: '#/components/parameters/DAGID'
+
+    post:
+      summary: Sets a note for a Task Instance.
+      description: |
+        Update the manual user note of a Task Instance.
+
+        *New in version 2.5.0*
+      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
+      operationId: set_task_instance_note
+      tags: [DAG]
+      requestBody:
+        description: Parameters of set Task Instance note.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetTaskInstanceNote'
+
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskInstance'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /dags/{dag_id}/updateTaskInstancesState:
     parameters:
       - $ref: '#/components/parameters/DAGID'
@@ -845,6 +880,42 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /dags/{dag_id}/dagRuns/{dag_run_id}/setNote:
+    parameters:
+      - $ref: '#/components/parameters/DAGID'
+      - $ref: '#/components/parameters/DAGRunID'
+    post:
+      summary: Update the DagRun note.
+      description: |
+        Update the manual user note of a DagRun.
+
+        *New in version 2.5.0*
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+      operationId: set_dag_run_note
+      tags: [DAGRun]
+      requestBody:
+        description: Parameters of set DagRun note.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetDagRunNote'
+
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRun'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /eventLogs:
     get:
@@ -2698,6 +2769,13 @@ components:
                 $ref: '#/components/schemas/DagWarning'
         - $ref: '#/components/schemas/CollectionInfo'
 
+    SetDagRunNote:
+      type: object
+      properties:
+        user_note:
+          description: The custom note to set for this Task Instance.
+          type: string
+
     EventLog:
       type: object
       description: Log of user operations via CLI or Web UI.
@@ -3957,6 +4035,21 @@ components:
           enum:
             - success
             - failed
+
+    SetTaskInstanceNote:
+      type: object
+      properties:
+        dag_run_id:
+          description: The task instance's DAG run ID.
+          type: string
+
+        task_id:
+          description: The Task ID
+          type: string
+
+        user_note:
+          description: The custom note to set for this Task Instance.
+          type: string
 
     ListDagRunsForm:
       type: object
