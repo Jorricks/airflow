@@ -4654,6 +4654,7 @@ class DagRunModelView(AirflowPrivilegeVerifierModelView):
         'queued_at',
         'start_date',
         'end_date',
+        'user_note',
         'external_trigger',
         'conf',
         'duration',
@@ -4666,12 +4667,22 @@ class DagRunModelView(AirflowPrivilegeVerifierModelView):
         'run_type',
         'start_date',
         'end_date',
+        'user_note',
         'external_trigger',
     ]
     label_columns = {
         'execution_date': 'Logical Date',
     }
-    edit_columns = ['state', 'dag_id', 'execution_date', 'start_date', 'end_date', 'run_id', 'conf']
+    edit_columns = [
+        'dag_id',
+        'run_id',
+        'execution_date',
+        'start_date',
+        'end_date',
+        'state',
+        'conf',
+        'user_note',
+    ]
 
     # duration is not a DB column, its derived
     order_columns = [
@@ -4683,6 +4694,7 @@ class DagRunModelView(AirflowPrivilegeVerifierModelView):
         'queued_at',
         'start_date',
         'end_date',
+        'user_note',
         'external_trigger',
         'conf',
     ]
@@ -5015,6 +5027,7 @@ class TaskInstanceModelView(AirflowPrivilegeVerifierModelView):
         'start_date',
         'end_date',
         'duration',
+        'user_note',
         'job_id',
         'hostname',
         'unixname',
@@ -5046,6 +5059,7 @@ class TaskInstanceModelView(AirflowPrivilegeVerifierModelView):
         'operator',
         'start_date',
         'end_date',
+        'user_note',
         'hostname',
         'priority_weight',
         'queue',
@@ -5056,9 +5070,13 @@ class TaskInstanceModelView(AirflowPrivilegeVerifierModelView):
     ]
 
     edit_columns = [
-        'state',
+        'dag_id',
+        'task_id',
+        'execution_date',
         'start_date',
         'end_date',
+        'state',
+        'user_note',
     ]
 
     add_exclude_columns = ["next_method", "next_kwargs", "trigger_id"]

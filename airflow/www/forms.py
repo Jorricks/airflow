@@ -129,15 +129,16 @@ class DagRunEditForm(DynamicForm):
     """
 
     dag_id = StringField(lazy_gettext('Dag Id'), widget=BS3TextFieldROWidget())
-    start_date = DateTimeWithTimezoneField(lazy_gettext('Start Date'), widget=AirflowDateTimePickerROWidget())
-    end_date = DateTimeWithTimezoneField(lazy_gettext('End Date'), widget=AirflowDateTimePickerROWidget())
     run_id = StringField(lazy_gettext('Run Id'), widget=BS3TextFieldROWidget())
-    state = StringField(lazy_gettext('State'), widget=BS3TextFieldROWidget())
     execution_date = DateTimeWithTimezoneField(
         lazy_gettext('Logical Date'),
         widget=AirflowDateTimePickerROWidget(),
     )
+    start_date = DateTimeWithTimezoneField(lazy_gettext('Start Date'), widget=AirflowDateTimePickerROWidget())
+    end_date = DateTimeWithTimezoneField(lazy_gettext('End Date'), widget=AirflowDateTimePickerROWidget())
+    state = StringField(lazy_gettext('State'), widget=BS3TextFieldROWidget())
     conf = TextAreaField(lazy_gettext('Conf'), widget=BS3TextAreaROWidget())
+    user_note = TextAreaField(lazy_gettext('User Note'), widget=BS3TextAreaFieldWidget())
 
     def populate_obj(self, item):
         """Populates the attributes of the passed obj with data from the form's fields."""
@@ -154,6 +155,11 @@ class TaskInstanceEditForm(DynamicForm):
     task_id = StringField(
         lazy_gettext('Task Id'), validators=[InputRequired()], widget=BS3TextFieldROWidget()
     )
+    execution_date = DateTimeWithTimezoneField(
+        lazy_gettext('Logical Date'),
+        widget=AirflowDateTimePickerROWidget(),
+        validators=[InputRequired()],
+    )
     start_date = DateTimeWithTimezoneField(lazy_gettext('Start Date'), widget=AirflowDateTimePickerROWidget())
     end_date = DateTimeWithTimezoneField(lazy_gettext('End Date'), widget=AirflowDateTimePickerROWidget())
     state = SelectField(
@@ -167,11 +173,7 @@ class TaskInstanceEditForm(DynamicForm):
         widget=Select2Widget(),
         validators=[InputRequired()],
     )
-    execution_date = DateTimeWithTimezoneField(
-        lazy_gettext('Logical Date'),
-        widget=AirflowDateTimePickerROWidget(),
-        validators=[InputRequired()],
-    )
+    user_note = TextAreaField(lazy_gettext('User Note'), widget=BS3TextAreaFieldWidget())
 
 
 class ConnectionForm(DynamicForm):
