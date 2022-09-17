@@ -22,6 +22,7 @@ Module to update db migration information in Airflow
 from __future__ import annotations
 
 import os
+import subprocess
 from pathlib import Path
 
 from checksumdir import dirhash
@@ -46,9 +47,13 @@ if __name__ == '__main__':
             f"[bright_blue]Generating diagram in {SVG_FILE} as some files "
             f"changed in {MIGRATIONS_DIR} since last generation."
         )
+        database_uri = subprocess.check_output(
+            "airflow config get-value database sql_alchemy_conn", shell=True, text=True
+        )
+        print("Generating diagram based on database_uri='{database_uri}'")
         render_er(
-            os.environ.get("AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"),
-            os.fspath(SVG_FILE),
+            input=database_uri.strip(),
+            output=os.fspath(SVG_FILE),
             exclude_tables=['sqlite_sequence'],
         )
         HASH_FILE.write_text(sha256hash)

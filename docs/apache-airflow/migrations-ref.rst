@@ -39,7 +39,9 @@ Here's the list of all the Database Migrations that are executed via when you ru
 +---------------------------------+-------------------+-------------------+--------------------------------------------------------------+
 | Revision ID                     | Revises ID        | Airflow Version   | Description                                                  |
 +=================================+===================+===================+==============================================================+
-| ``ecb43d2a1842`` (head)         | ``1486deb605b4``  | ``2.4.0``         | Add processor_subdir column to DagModel, SerializedDagModel  |
+| ``65a852f26899`` (head)         | ``ecb43d2a1842``  | ``2.5.0``         | Add user comment to task_instance and dag_run.               |
++---------------------------------+-------------------+-------------------+--------------------------------------------------------------+
+| ``ecb43d2a1842``                | ``1486deb605b4``  | ``2.4.0``         | Add processor_subdir column to DagModel, SerializedDagModel  |
 |                                 |                   |                   | and CallbackRequest tables.                                  |
 +---------------------------------+-------------------+-------------------+--------------------------------------------------------------+
 | ``1486deb605b4``                | ``f4ff391becb5``  | ``2.4.0``         | add dag_owner_attributes table                               |
