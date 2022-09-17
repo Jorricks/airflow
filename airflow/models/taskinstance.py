@@ -452,6 +452,7 @@ class TaskInstance(Base, LoggingMixin):
     queued_by_job_id = Column(Integer)
     pid = Column(Integer)
     executor_config = Column(ExecutorConfigType(pickler=dill))
+    user_note = Column(String(1000))
 
     external_executor_id = Column(StringID())
 
