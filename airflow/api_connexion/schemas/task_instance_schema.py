@@ -192,7 +192,7 @@ class SetTaskInstanceNoteFormSchema(Schema):
 
     dag_run_id = fields.String(allow_none=False)
     task_id = fields.String(allow_none=False)
-    user_note = fields.String(allow_none=True, validate=validate.Length(max=1000))
+    user_notes = fields.String(allow_none=True, validate=validate.Length(max=1000))
 
 
 task_instance_schema = TaskInstanceSchema()

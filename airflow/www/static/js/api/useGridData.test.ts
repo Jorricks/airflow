@@ -30,6 +30,7 @@ const commonDagRunParams = {
   startDate: null,
   endDate: null,
   lastSchedulingDecision: null,
+  userNotes: '',
 };
 
 describe('Test areActiveRuns()', () => {

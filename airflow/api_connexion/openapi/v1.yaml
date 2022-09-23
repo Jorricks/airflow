@@ -884,7 +884,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/DAGID'
       - $ref: '#/components/parameters/DAGRunID'
-    post:
+    patch:
       summary: Update the DagRun note.
       description: |
         Update the manual user note of a DagRun.
@@ -2703,6 +2703,13 @@ components:
 
             The value of this field can be set only when creating the object. If you try to modify the
             field of an existing object, the request fails with an BAD_REQUEST error.
+        user_notes:
+          type: string
+          description: |
+            Contains manually entered notes by the user about the DagRun.
+
+            *New in version 2.5.0*
+          nullable: true
 
     UpdateDagRunState:
       type: object
@@ -2772,8 +2779,8 @@ components:
     SetDagRunNote:
       type: object
       properties:
-        user_note:
-          description: The custom note to set for this Task Instance.
+        user_notes:
+          description: Custom notes left by users for this Dag Run.
           type: string
 
     EventLog:
@@ -3136,6 +3143,13 @@ components:
           nullable: true
         triggerer_job:
           $ref: '#/components/schemas/Job'
+          nullable: true
+        user_notes:
+          type: string
+          description: |
+            Contains manually entered notes by the user about the TaskInstance.
+
+            *New in version 2.5.0*
           nullable: true
 
     TaskInstanceCollection:
@@ -4047,7 +4061,7 @@ components:
           description: The Task ID
           type: string
 
-        user_note:
+        user_notes:
           description: The custom note to set for this Task Instance.
           type: string
 

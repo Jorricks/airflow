@@ -187,7 +187,7 @@ export interface paths {
      *
      * *New in version 2.5.0*
      */
-    post: operations["set_dag_run_note"];
+    patch: operations["set_dag_run_note"];
     parameters: {
       path: {
         /** The DAG ID. */
@@ -1004,6 +1004,12 @@ export interface components {
        * field of an existing object, the request fails with an BAD_REQUEST error.
        */
       conf?: { [key: string]: unknown };
+      /**
+       * @description Contains manually entered notes by the user about the DagRun.
+       *
+       * *New in version 2.5.0*
+       */
+      user_notes?: string | null;
     };
     /**
      * @description Modify the state of a DAG run.
@@ -1043,8 +1049,8 @@ export interface components {
       import_errors?: components["schemas"]["DagWarning"][];
     } & components["schemas"]["CollectionInfo"];
     SetDagRunNote: {
-      /** @description The custom note to set for this Task Instance. */
-      user_note?: string;
+      /** @description Custom notes left by users for this Dag Run. */
+      user_notes?: string;
     };
     /** @description Log of user operations via CLI or Web UI. */
     EventLog: {
@@ -1244,6 +1250,12 @@ export interface components {
       rendered_fields?: { [key: string]: unknown };
       trigger?: components["schemas"]["Trigger"] | null;
       triggerer_job?: components["schemas"]["Job"] | null;
+      /**
+       * @description Contains manually entered notes by the user about the TaskInstance.
+       *
+       * *New in version 2.5.0*
+       */
+      user_notes?: string | null;
     };
     /**
      * @description Collection of task instances.
@@ -1773,7 +1785,7 @@ export interface components {
       /** @description The Task ID */
       task_id?: string;
       /** @description The custom note to set for this Task Instance. */
-      user_note?: string;
+      user_notes?: string;
     };
     ListDagRunsForm: {
       /**

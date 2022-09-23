@@ -36,6 +36,7 @@ import useDatasets from './useDatasets';
 import useDataset from './useDataset';
 import useDatasetDependencies from './useDatasetDependencies';
 import useDatasetEvents from './useDatasetEvents';
+import useSetDagRunUserNote from './useSetDagRunUserNote';
 import useUpstreamDatasetEvents from './useUpstreamDatasetEvents';
 import useTaskInstance from './useTaskInstance';
 
@@ -62,6 +63,7 @@ export {
   useMarkSuccessTask,
   useQueueRun,
   useRunTask,
+  useSetDagRunUserNote,
   useTaskInstance,
   useUpstreamDatasetEvents,
 };

@@ -47,6 +47,7 @@ import MarkSuccessRun from './MarkSuccessRun';
 import QueueRun from './QueueRun';
 import ClearRun from './ClearRun';
 import DatasetTriggerEvents from './DatasetTriggerEvents';
+import SetDagRunUserNote from './SetDagRunUserNote';
 
 const dagId = getMetaValue('dag_id');
 const graphUrl = getMetaValue('graph_url');
@@ -69,6 +70,7 @@ const DagRun = ({ runId }: Props) => {
     dataIntervalEnd,
     startDate,
     endDate,
+    userNotes,
   } = run;
   const detailsParams = new URLSearchParamsWrapper({
     run_id: runId,
@@ -98,6 +100,11 @@ const DagRun = ({ runId }: Props) => {
         </Flex>
         <Divider my={3} />
       </Box>
+      <SetDagRunUserNote
+        runId={runId}
+        dagId={dagId}
+        initialValue={userNotes}
+      />
       <Table variant="striped">
         <Tbody>
           <Tr>

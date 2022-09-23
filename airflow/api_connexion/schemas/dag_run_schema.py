@@ -73,6 +73,7 @@ class DAGRunSchema(SQLAlchemySchema):
     data_interval_end = auto_field(dump_only=True)
     last_scheduling_decision = auto_field(dump_only=True)
     run_type = auto_field(dump_only=True)
+    user_notes = auto_field(dump_only=True)
 
     @pre_load
     def autogenerate(self, data, **kwargs):
@@ -166,7 +167,7 @@ class DagRunsBatchFormSchema(Schema):
 class SetDagRunNoteFormSchema(Schema):
     """Schema for handling the request of clearing a DAG run"""
 
-    user_note = fields.String(allow_none=True, validate=validate.Length(max=1000))
+    user_notes = fields.String(allow_none=True, validate=validate.Length(max=1000))
 
 
 dagrun_schema = DAGRunSchema()
