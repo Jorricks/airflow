@@ -72,6 +72,7 @@ const DagRun = ({ runId }: Props) => {
     endDate,
     userNotes,
   } = run;
+  const updateDagRunNotesCallable = (notes: string) => { run.userNotes = notes; };
   const detailsParams = new URLSearchParamsWrapper({
     run_id: runId,
   }).toString();
@@ -101,10 +102,13 @@ const DagRun = ({ runId }: Props) => {
         <Divider my={3} />
       </Box>
       <SetDagRunUserNote
-        runId={runId}
         dagId={dagId}
+        runId={runId}
         initialValue={userNotes}
+        updateApiDataFunction={updateDagRunNotesCallable}
+        key={dagId + runId}
       />
+      <Divider my={3} />
       <Table variant="striped">
         <Tbody>
           <Tr>

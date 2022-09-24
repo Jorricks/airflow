@@ -18,31 +18,67 @@
  */
 
 import React, { useState } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
+import { Button, Text } from '@chakra-ui/react';
+import { getMetaValue } from '../../../utils';
 import { useSetDagRunUserNote } from '../../../api';
 
-const SetDagRunUserNote = ({ dagId, runId, initialValue }) => {
+const canEdit = getMetaValue('can_edit') === 'True';
+
+const SetDagRunUserNote = ({
+  dagId, runId, initialValue, updateApiDataFunction,
+}) => {
   const [userNote, setUserNote] = useState(initialValue == null ? '' : initialValue);
-  const { mutateAsync: markFailed, isLoading } = useSetDagRunUserNote(dagId, runId, userNote);
+  const [noteBeforeEdit, setNoteBeforeEdit] = useState('');
+  const [editMode, changeEditMode] = useState(false);
+  const { mutateAsync: apiCallToSetNote, isLoading } = useSetDagRunUserNote(dagId, runId, userNote);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await markFailed(runId, dagId, (userNote === null) ? '' : userNote);
-    // @ToDo(jorrick) remove this.
-    console.log(isLoading);
+    await apiCallToSetNote();
+    updateApiDataFunction(userNote);
+    changeEditMode(false);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      Enter some information :)
-      <input
-        type="textarea"
-        id="someID"
-        value={(userNote === null) ? '' : userNote}
-        onChange={(e) => setUserNote(e.target.value)}
-      />
-      <p>{userNote}</p>
-      <button type="submit">Update note</button>
-    </form>
+    <>
+      <Text fontWeight="bold" mr={2}>DagRun notes:</Text>
+      {editMode ? (
+        <form onSubmit={handleSubmit}>
+          <div>
+            <TextareaAutosize
+              minRows={1}
+              maxRows={10}
+              value={(userNote === null) ? '' : userNote}
+              onChange={(e) => setUserNote(e.target.value)}
+              style={{ width: '100%' }}
+            />
+          </div>
+          <div>
+            <Button type="submit" isLoading={isLoading}>
+              Update user notes
+            </Button>
+            <Button
+              onClick={() => { setUserNote(noteBeforeEdit); changeEditMode(false); }}
+              isLoading={isLoading}
+            >
+              Discard edit
+            </Button>
+          </div>
+        </form>
+      ) : (
+        <>
+          <p style={{ whiteSpace: 'pre-line' }}>{userNote}</p>
+          <Button
+            onClick={() => { setNoteBeforeEdit(userNote); changeEditMode(true); }}
+            isLoading={isLoading}
+            isDisabled={!canEdit}
+          >
+            {userNote === '' ? 'Edit notes' : 'Update notes'}
+          </Button>
+        </>
+      )}
+    </>
   );
 };
 

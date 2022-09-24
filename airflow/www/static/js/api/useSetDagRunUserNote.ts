@@ -21,13 +21,11 @@ import axios from 'axios';
 import { useMutation } from 'react-query';
 import useErrorToast from '../utils/useErrorToast';
 
-interface Props {
-  dagId: string;
-  runId: string;
-  newUserNoteValue: string;
-}
-
-export default function UseSetDagRunUserNote({ dagId, runId, newUserNoteValue }: Props) {
+export default function UseSetDagRunUserNote(
+  dagId: string,
+  runId: string,
+  newUserNoteValue: string,
+) {
   const errorToast = useErrorToast();
   const setDagRunUserNote = (`/api/v1/dags/${dagId}/dagRuns/_DAG_RUN_ID_/setNote`)
     .replace('_DAG_RUN_ID_', runId);
@@ -36,9 +34,6 @@ export default function UseSetDagRunUserNote({ dagId, runId, newUserNoteValue }:
     ['dagRunFailed', dagId, runId],
     () => axios.patch(setDagRunUserNote, { user_notes: newUserNoteValue }),
     {
-      onSuccess: () => {
-        console.log('Success <3');
-      },
       onError: (error: Error) => errorToast({ error }),
     },
   );

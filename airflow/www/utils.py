@@ -144,6 +144,7 @@ def encode_dag_run(dag_run: models.DagRun | None) -> dict[str, Any] | None:
         'data_interval_end': datetime_to_string(dag_run.data_interval_end),
         'run_type': dag_run.run_type,
         'last_scheduling_decision': datetime_to_string(dag_run.last_scheduling_decision),
+        "user_notes": dag_run.user_notes,
     }
 
 
