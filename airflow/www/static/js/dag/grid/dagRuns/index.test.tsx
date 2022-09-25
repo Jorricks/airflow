@@ -41,7 +41,7 @@ const generateRuns = (length: number): DagRun[] => (
     endDate: '2021-11-08T21:17:13.206426+00:00',
     lastSchedulingDecision: datestring,
     executionDate: datestring,
-    userNotes: 'someRandomValue',
+    notes: 'someRandomValue',
   }))
 );
 
@@ -58,7 +58,7 @@ describe('Test DagRuns', () => {
         runType: 'scheduled',
         executionDate: '2021-11-08T21:14:19.704433+00:00',
         lastSchedulingDecision: datestring,
-        userNotes: 'someRandomValue',
+        notes: 'someRandomValue',
       },
       {
         runId: 'run2',
@@ -70,7 +70,7 @@ describe('Test DagRuns', () => {
         endDate: '2021-11-09T00:22:18.607167+00:00',
         executionDate: '2021-11-08T21:14:19.704433+00:00',
         lastSchedulingDecision: datestring,
-        userNotes: 'someRandomValue',
+        notes: 'someRandomValue',
       },
     ];
     const data = {

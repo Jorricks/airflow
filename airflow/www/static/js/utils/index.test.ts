@@ -126,7 +126,7 @@ describe('Test getDagRunLabel', () => {
     runType: 'scheduled',
     executionDate: '2021-12-09T21:14:19.704433+00:00',
     lastSchedulingDecision: '2021-11-08T21:14:19.704433+00:00',
-    userNotes: 'someRandomValue',
+    notes: 'someRandomValue',
   } as DagRun;
 
   test('Defaults to dataIntervalEnd', async () => {

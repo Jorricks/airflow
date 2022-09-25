@@ -26,27 +26,27 @@ import {
   AccordionIcon,
   Box,
   Button,
-  Text, useTheme
-} from '@chakra-ui/react'
+  Text, useTheme,
+} from '@chakra-ui/react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { getMetaValue } from '../../../utils';
-import { useSetDagRunUserNote } from '../../../api';
+import { useSetDagRunNotes } from '../../../api';
 
 const canEdit = getMetaValue('can_edit') === 'True';
 
-const SetDagRunUserNote = ({
+const SetDagRunNotes = ({
   dagId, runId, initialValue, updateApiDataFunction,
 }) => {
-  const [userNote, setUserNote] = useState(initialValue == null ? '' : initialValue);
+  const [notes, setNotes] = useState(initialValue == null ? '' : initialValue);
   const [noteBeforeEdit, setNoteBeforeEdit] = useState('');
   const [editMode, changeEditMode] = useState(false);
-  const { mutateAsync: apiCallToSetNote, isLoading } = useSetDagRunUserNote(dagId, runId, userNote);
+  const { mutateAsync: apiCallToSetNote, isLoading } = useSetDagRunNotes(dagId, runId, notes);
 
   const { colors } = useTheme();
   const handleSubmit = async (e) => {
     e.preventDefault();
     await apiCallToSetNote();
-    updateApiDataFunction(userNote);
+    updateApiDataFunction(notes);
     changeEditMode(false);
   };
 
@@ -55,8 +55,8 @@ const SetDagRunUserNote = ({
       <AccordionItem style={{ border: 0 }}>
         <h2>
           <AccordionButton>
-            <Box flex='1' textAlign='left' font>
-              <Text fontSize='lg' color={colors.blue[600]} fontWeight='600'>
+            <Box flex="1" textAlign="left" font>
+              <Text fontSize="lg" color={colors.blue[600]} fontWeight="600">
                 DAG Run Notes:
               </Text>
             </Box>
@@ -70,8 +70,8 @@ const SetDagRunUserNote = ({
                 <TextareaAutosize
                   minRows={1}
                   maxRows={10}
-                  value={(userNote === null) ? '' : userNote}
-                  onChange={(e) => setUserNote(e.target.value)}
+                  value={(notes === null) ? '' : notes}
+                  onChange={(e) => setNotes(e.target.value)}
                   style={{ width: '100%' }}
                 />
               </div>
@@ -80,7 +80,7 @@ const SetDagRunUserNote = ({
                   Update user notes
                 </Button>
                 <Button
-                  onClick={() => { setUserNote(noteBeforeEdit); changeEditMode(false); }}
+                  onClick={() => { setNotes(noteBeforeEdit); changeEditMode(false); }}
                   isLoading={isLoading}
                   style={{ marginLeft: '15px' }}
                 >
@@ -90,14 +90,14 @@ const SetDagRunUserNote = ({
             </form>
           ) : (
             <>
-              <p style={{ whiteSpace: 'pre-line' }}>{userNote}</p>
+              <p style={{ whiteSpace: 'pre-line' }}>{notes}</p>
               <Button
-                onClick={() => { setNoteBeforeEdit(userNote); changeEditMode(true); }}
+                onClick={() => { setNoteBeforeEdit(notes); changeEditMode(true); }}
                 isLoading={isLoading}
                 isDisabled={!canEdit}
                 style={{ marginTop: '10px' }}
               >
-                {userNote === '' ? 'Set a note' : 'Change notes'}
+                {notes === '' ? 'Set a note' : 'Change notes'}
               </Button>
             </>
           )}
@@ -107,4 +107,4 @@ const SetDagRunUserNote = ({
   );
 };
 
-export default SetDagRunUserNote;
+export default SetDagRunNotes;

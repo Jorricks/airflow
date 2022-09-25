@@ -52,7 +52,7 @@ interface DagRun {
   startDate: string | null;
   endDate: string | null;
   lastSchedulingDecision: string | null;
-  userNotes: string | null;
+  notes: string | null;
 }
 
 interface TaskInstance {
@@ -68,7 +68,7 @@ interface TaskInstance {
   tryNumber?: number;
   triggererJob?: Job;
   trigger?: Trigger;
-  userNotes: string | null;
+  notes: string | null;
 }
 
 interface Trigger {

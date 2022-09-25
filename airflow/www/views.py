@@ -4654,7 +4654,7 @@ class DagRunModelView(AirflowPrivilegeVerifierModelView):
         'queued_at',
         'start_date',
         'end_date',
-        'user_notes',
+        'notes',
         'external_trigger',
         'conf',
         'duration',
@@ -4667,7 +4667,7 @@ class DagRunModelView(AirflowPrivilegeVerifierModelView):
         'run_type',
         'start_date',
         'end_date',
-        'user_notes',
+        'notes',
         'external_trigger',
     ]
     label_columns = {
@@ -4681,7 +4681,7 @@ class DagRunModelView(AirflowPrivilegeVerifierModelView):
         'end_date',
         'state',
         'conf',
-        'user_notes',
+        'notes',
     ]
 
     # duration is not a DB column, its derived
@@ -4694,7 +4694,7 @@ class DagRunModelView(AirflowPrivilegeVerifierModelView):
         'queued_at',
         'start_date',
         'end_date',
-        'user_notes',
+        'notes',
         'external_trigger',
         'conf',
     ]
@@ -5027,7 +5027,7 @@ class TaskInstanceModelView(AirflowPrivilegeVerifierModelView):
         'start_date',
         'end_date',
         'duration',
-        'user_notes',
+        'notes',
         'job_id',
         'hostname',
         'unixname',
@@ -5059,7 +5059,7 @@ class TaskInstanceModelView(AirflowPrivilegeVerifierModelView):
         'operator',
         'start_date',
         'end_date',
-        'user_notes',
+        'notes',
         'hostname',
         'priority_weight',
         'queue',
@@ -5076,7 +5076,7 @@ class TaskInstanceModelView(AirflowPrivilegeVerifierModelView):
         'start_date',
         'end_date',
         'state',
-        'user_notes',
+        'notes',
     ]
 
     add_exclude_columns = ["next_method", "next_kwargs", "trigger_id"]

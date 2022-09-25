@@ -2703,7 +2703,7 @@ components:
 
             The value of this field can be set only when creating the object. If you try to modify the
             field of an existing object, the request fails with an BAD_REQUEST error.
-        user_notes:
+        notes:
           type: string
           description: |
             Contains manually entered notes by the user about the DagRun.
@@ -2779,7 +2779,7 @@ components:
     SetDagRunNote:
       type: object
       properties:
-        user_notes:
+        notes:
           description: Custom notes left by users for this Dag Run.
           type: string
 
@@ -3144,7 +3144,7 @@ components:
         triggerer_job:
           $ref: '#/components/schemas/Job'
           nullable: true
-        user_notes:
+        notes:
           type: string
           description: |
             Contains manually entered notes by the user about the TaskInstance.
@@ -4061,7 +4061,7 @@ components:
           description: The Task ID
           type: string
 
-        user_notes:
+        notes:
           description: The custom note to set for this Task Instance.
           type: string
 

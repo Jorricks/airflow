@@ -436,6 +436,6 @@ def set_dag_run_note(*, dag_id: str, dag_run_id: str, session: Session = NEW_SES
     except ValidationError as err:
         raise BadRequest(detail=str(err))
 
-    dag_run.user_notes = post_body["user_notes"]
+    dag_run.notes = post_body["notes"]
     session.commit()
     return dagrun_schema.dump(dag_run)

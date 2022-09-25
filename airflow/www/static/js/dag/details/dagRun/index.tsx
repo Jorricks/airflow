@@ -47,7 +47,7 @@ import MarkSuccessRun from './MarkSuccessRun';
 import QueueRun from './QueueRun';
 import ClearRun from './ClearRun';
 import DatasetTriggerEvents from './DatasetTriggerEvents';
-import SetDagRunUserNote from './SetDagRunUserNote';
+import SetDagRunNotes from './SetDagRunNotes';
 
 const dagId = getMetaValue('dag_id');
 const graphUrl = getMetaValue('graph_url');
@@ -70,9 +70,9 @@ const DagRun = ({ runId }: Props) => {
     dataIntervalEnd,
     startDate,
     endDate,
-    userNotes,
+    notes,
   } = run;
-  const updateDagRunNotesCallable = (notes: string) => { run.userNotes = notes; };
+  const updateDagRunNotesCallable = (newNotes: string) => { run.notes = newNotes; };
   const detailsParams = new URLSearchParamsWrapper({
     run_id: runId,
   }).toString();
@@ -101,10 +101,10 @@ const DagRun = ({ runId }: Props) => {
         </Flex>
         <Divider my={3} />
       </Box>
-      <SetDagRunUserNote
+      <SetDagRunNotes
         dagId={dagId}
         runId={runId}
-        initialValue={userNotes}
+        initialValue={notes}
         updateApiDataFunction={updateDagRunNotesCallable}
         key={dagId + runId}
       />

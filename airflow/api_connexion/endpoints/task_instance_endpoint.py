@@ -576,6 +576,6 @@ def set_task_instance_note(*, dag_id: str, session: Session = NEW_SESSION) -> AP
         )
         raise NotFound(error_message)
 
-    ti.user_notes = post_body["user_notes"]
+    ti.notes = post_body["notes"]
     session.commit()
     return task_instance_schema.dump(ti)

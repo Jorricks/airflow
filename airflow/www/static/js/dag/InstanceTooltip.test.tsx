@@ -33,7 +33,7 @@ const instance = {
   state: 'success' as TaskState,
   runId: 'run',
   taskId: 'task',
-  userNotes: '',
+  notes: '',
 };
 
 describe('Test Task InstanceTooltip', () => {
@@ -83,7 +83,7 @@ describe('Test Task InstanceTooltip', () => {
                   state: 'success',
                   startDate: '',
                   endDate: '',
-                  userNotes: '',
+                  notes: '',
                 },
               ],
             },
