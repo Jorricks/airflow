@@ -190,8 +190,6 @@ class TaskInstanceReferenceCollectionSchema(Schema):
 class SetTaskInstanceNoteFormSchema(Schema):
     """Schema for settings a note for a TaskInstance"""
 
-    dag_run_id = fields.String(allow_none=False)
-    task_id = fields.String(allow_none=False)
     notes = fields.String(allow_none=True, validate=validate.Length(max=1000))
 
 

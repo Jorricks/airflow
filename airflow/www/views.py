@@ -261,6 +261,7 @@ def dag_to_grid(dag, dag_runs, session):
             TaskInstance.task_id,
             TaskInstance.run_id,
             TaskInstance.state,
+            TaskInstance.notes,
             sqla.func.count(sqla.func.coalesce(TaskInstance.state, sqla.literal('no_status'))).label(
                 'state_count'
             ),
@@ -295,6 +296,7 @@ def dag_to_grid(dag, dag_runs, session):
                     'start_date': task_instance.start_date,
                     'end_date': task_instance.end_date,
                     'try_number': try_count,
+                    'notes': task_instance.notes,
                 }
 
             def _mapped_summary(ti_summaries):

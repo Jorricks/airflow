@@ -21,18 +21,18 @@ import axios from 'axios';
 import { useMutation } from 'react-query';
 import useErrorToast from '../utils/useErrorToast';
 
-export default function UseSetDagRunNotes(
+export default function useSetTaskInstanceNotes(
   dagId: string,
   runId: string,
+  taskId: string,
   newNotesValue: string,
 ) {
   const errorToast = useErrorToast();
-  const setDagRunNotes = (`/api/v1/dags/${dagId}/dagRuns/_DAG_RUN_ID_/setNote`)
-    .replace('_DAG_RUN_ID_', runId);
+  const setTaskInstanceNotes = `/api/v1/dags/${dagId}/dagRuns/${runId}/taskInstances/${taskId}/setNote`;
 
   return useMutation(
-    ['setDagRunNotes', dagId, runId],
-    () => axios.patch(setDagRunNotes, { notes: newNotesValue }),
+    ['setTaskInstanceNotes', dagId, runId],
+    () => axios.patch(setTaskInstanceNotes, { notes: newNotesValue }),
     {
       onError: (error: Error) => errorToast({ error }),
     },

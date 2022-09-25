@@ -585,12 +585,14 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /dags/{dag_id}/setTaskInstanceNote:
+  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/setNote:
     parameters:
       - $ref: '#/components/parameters/DAGID'
+      - $ref: '#/components/parameters/DAGRunID'
+      - $ref: '#/components/parameters/TaskID'
 
-    post:
-      summary: Sets a note for a Task Instance.
+    patch:
+      summary: Update the TaskInstance note.
       description: |
         Update the manual user note of a Task Instance.
 
@@ -613,6 +615,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskInstance'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthenticated'
         '403':
@@ -4053,14 +4057,6 @@ components:
     SetTaskInstanceNote:
       type: object
       properties:
-        dag_run_id:
-          description: The task instance's DAG run ID.
-          type: string
-
-        task_id:
-          description: The Task ID
-          type: string
-
         notes:
           description: The custom note to set for this Task Instance.
           type: string

@@ -92,17 +92,21 @@ export interface paths {
       };
     };
   };
-  "/dags/{dag_id}/setTaskInstanceNote": {
+  "/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/setNote": {
     /**
      * Update the manual user note of a Task Instance.
      *
      * *New in version 2.5.0*
      */
-    post: operations["set_task_instance_note"];
+    patch: operations["set_task_instance_note"];
     parameters: {
       path: {
         /** The DAG ID. */
         dag_id: components["parameters"]["DAGID"];
+        /** The DAG run ID. */
+        dag_run_id: components["parameters"]["DAGRunID"];
+        /** The task ID. */
+        task_id: components["parameters"]["TaskID"];
       };
     };
   };
@@ -1780,10 +1784,6 @@ export interface components {
       new_state?: "success" | "failed";
     };
     SetTaskInstanceNote: {
-      /** @description The task instance's DAG run ID. */
-      dag_run_id?: string;
-      /** @description The Task ID */
-      task_id?: string;
       /** @description The custom note to set for this Task Instance. */
       notes?: string;
     };
@@ -2602,6 +2602,10 @@ export interface operations {
       path: {
         /** The DAG ID. */
         dag_id: components["parameters"]["DAGID"];
+        /** The DAG run ID. */
+        dag_run_id: components["parameters"]["DAGRunID"];
+        /** The task ID. */
+        task_id: components["parameters"]["TaskID"];
       };
     };
     responses: {
@@ -2611,6 +2615,7 @@ export interface operations {
           "application/json": components["schemas"]["TaskInstance"];
         };
       };
+      400: components["responses"]["BadRequest"];
       401: components["responses"]["Unauthenticated"];
       403: components["responses"]["PermissionDenied"];
       404: components["responses"]["NotFound"];

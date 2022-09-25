@@ -555,7 +555,9 @@ def post_set_task_instances_state(*, dag_id: str, session: Session = NEW_SESSION
     ],
 )
 @provide_session
-def set_task_instance_note(*, dag_id: str, session: Session = NEW_SESSION) -> APIResponse:
+def set_task_instance_note(
+    *, dag_id: str, dag_run_id: str, task_id: str, session: Session = NEW_SESSION
+) -> APIResponse:
     """Set the note for a dag run."""
     try:
         post_body = set_task_instance_note_form_schema.load(get_json_request_dict())
@@ -565,8 +567,8 @@ def set_task_instance_note(*, dag_id: str, session: Session = NEW_SESSION) -> AP
     ti: TI | None = (
         session.query(TI)
         .filter(TI.dag_id == dag_id)
-        .filter(TI.run_id == post_body["dag_run_id"])
-        .filter(TI.task_id == post_body["task_id"])
+        .filter(TI.run_id == dag_run_id)
+        .filter(TI.task_id == task_id)
         .one_or_none()
     )
     if ti is None:
