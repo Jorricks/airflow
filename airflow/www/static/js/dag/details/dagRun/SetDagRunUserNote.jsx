@@ -18,8 +18,17 @@
  */
 
 import React, { useState } from 'react';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Box,
+  Button,
+  Text, useTheme
+} from '@chakra-ui/react'
 import TextareaAutosize from 'react-textarea-autosize';
-import { Button, Text } from '@chakra-ui/react';
 import { getMetaValue } from '../../../utils';
 import { useSetDagRunUserNote } from '../../../api';
 
@@ -33,6 +42,7 @@ const SetDagRunUserNote = ({
   const [editMode, changeEditMode] = useState(false);
   const { mutateAsync: apiCallToSetNote, isLoading } = useSetDagRunUserNote(dagId, runId, userNote);
 
+  const { colors } = useTheme();
   const handleSubmit = async (e) => {
     e.preventDefault();
     await apiCallToSetNote();
@@ -41,44 +51,59 @@ const SetDagRunUserNote = ({
   };
 
   return (
-    <>
-      <Text fontWeight="bold" mr={2}>DagRun notes:</Text>
-      {editMode ? (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <TextareaAutosize
-              minRows={1}
-              maxRows={10}
-              value={(userNote === null) ? '' : userNote}
-              onChange={(e) => setUserNote(e.target.value)}
-              style={{ width: '100%' }}
-            />
-          </div>
-          <div>
-            <Button type="submit" isLoading={isLoading}>
-              Update user notes
-            </Button>
-            <Button
-              onClick={() => { setUserNote(noteBeforeEdit); changeEditMode(false); }}
-              isLoading={isLoading}
-            >
-              Discard edit
-            </Button>
-          </div>
-        </form>
-      ) : (
-        <>
-          <p style={{ whiteSpace: 'pre-line' }}>{userNote}</p>
-          <Button
-            onClick={() => { setNoteBeforeEdit(userNote); changeEditMode(true); }}
-            isLoading={isLoading}
-            isDisabled={!canEdit}
-          >
-            {userNote === '' ? 'Edit notes' : 'Update notes'}
-          </Button>
-        </>
-      )}
-    </>
+    <Accordion defaultIndex={[0]} allowMultiple>
+      <AccordionItem style={{ border: 0 }}>
+        <h2>
+          <AccordionButton>
+            <Box flex='1' textAlign='left' font>
+              <Text fontSize='lg' color={colors.blue[600]} fontWeight='600'>
+                DAG Run Notes:
+              </Text>
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </h2>
+        <AccordionPanel>
+          {editMode ? (
+            <form onSubmit={handleSubmit}>
+              <div>
+                <TextareaAutosize
+                  minRows={1}
+                  maxRows={10}
+                  value={(userNote === null) ? '' : userNote}
+                  onChange={(e) => setUserNote(e.target.value)}
+                  style={{ width: '100%' }}
+                />
+              </div>
+              <div style={{ marginTop: '10px' }}>
+                <Button type="submit" isLoading={isLoading}>
+                  Update user notes
+                </Button>
+                <Button
+                  onClick={() => { setUserNote(noteBeforeEdit); changeEditMode(false); }}
+                  isLoading={isLoading}
+                  style={{ marginLeft: '15px' }}
+                >
+                  Discard edit
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <>
+              <p style={{ whiteSpace: 'pre-line' }}>{userNote}</p>
+              <Button
+                onClick={() => { setNoteBeforeEdit(userNote); changeEditMode(true); }}
+                isLoading={isLoading}
+                isDisabled={!canEdit}
+                style={{ marginTop: '10px' }}
+              >
+                {userNote === '' ? 'Set a note' : 'Change notes'}
+              </Button>
+            </>
+          )}
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
   );
 };
 
