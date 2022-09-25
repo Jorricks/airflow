@@ -24,7 +24,8 @@ import {
   Table,
   Tbody,
   Tr,
-  Td, Heading, Thead,
+  Td,
+  Thead,
 } from '@chakra-ui/react';
 
 import { finalStatesMap } from 'src/utils';
@@ -117,9 +118,17 @@ const Details = ({ instance, group, dagId }: Props) => {
           )}
           {state === 'deferred' && (
             <>
-              <Tr borderBottomWidth={2} borderBottomColor="gray.300">
-                <Thead><Heading size="sm">Triggerer info</Heading></Thead>
-              </Tr>
+              {/* We need to apply a style change here because we have THeader in the TBody. */}
+              {/* Instead, we should move this header outside of the table. */}
+              <Thead style={{ display: 'contents' }}>
+                <Tr
+                  borderBottomWidth={2}
+                  borderBottomColor="gray.300"
+                  style={{ fontWeight: 'bold', lineHeight: '3em' }}
+                >
+                  Triggerer info
+                </Tr>
+              </Thead>
               <Tr>
                 <Td>Trigger class</Td>
                 <Td>{`${apiTI?.trigger?.classpath}`}</Td>
@@ -138,9 +147,17 @@ const Details = ({ instance, group, dagId }: Props) => {
               </Tr>
             </>
           )}
-          <Tr borderBottomWidth={2} borderBottomColor="gray.300">
-            <Thead><Heading size="sm">Task Instance Details</Heading></Thead>
-          </Tr>
+          {/* We need to apply a style change here because we are applying a header in a body. */}
+          {/* Instead, we should move this header outside of the table. */}
+          <Thead style={{ display: 'contents' }}>
+            <Tr
+              borderBottomWidth={2}
+              borderBottomColor="gray.300"
+              style={{ fontWeight: 'bold', lineHeight: '3em' }}
+            >
+              Task Instance Information
+            </Tr>
+          </Thead>
           <Tr>
             <Td>
               {isOverall}

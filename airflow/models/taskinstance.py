@@ -891,6 +891,7 @@ class TaskInstance(Base, LoggingMixin):
             self.trigger_id = ti.trigger_id
             self.next_method = ti.next_method
             self.next_kwargs = ti.next_kwargs
+            self.notes = ti.notes
         else:
             self.state = None
 

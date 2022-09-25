@@ -556,28 +556,35 @@ def post_set_task_instances_state(*, dag_id: str, session: Session = NEW_SESSION
 )
 @provide_session
 def set_task_instance_note(
-    *, dag_id: str, dag_run_id: str, task_id: str, session: Session = NEW_SESSION
+    *, dag_id: str, dag_run_id: str, task_id: str, map_index: int = -1, session: Session = NEW_SESSION
 ) -> APIResponse:
     """Set the note for a dag run."""
     try:
         post_body = set_task_instance_note_form_schema.load(get_json_request_dict())
+        new_value_for_notes = post_body["notes"]
     except ValidationError as err:
         raise BadRequest(detail=str(err))
 
-    ti: TI | None = (
+    query = (
         session.query(TI)
         .filter(TI.dag_id == dag_id)
         .filter(TI.run_id == dag_run_id)
         .filter(TI.task_id == task_id)
-        .one_or_none()
+        .filter(TI.map_index == map_index)
     )
-    if ti is None:
-        error_message = (
-            f'Task Instance not found for dag_id={dag_id}, '
-            f'run_id={post_body["dag_run_id"]}, task_id={post_body["task_id"]}'
+    try:
+        ti: TI | None = query.one_or_none()
+    except MultipleResultsFound:
+        raise NotFound(
+            "Task instance not found", detail="Task instance is mapped, add the map_index value to the URL"
         )
+    if ti is None:
+        error_message = f'Task Instance not found for dag_id={dag_id}, run_id={dag_run_id}, task_id={task_id}'
         raise NotFound(error_message)
 
-    ti.notes = post_body["notes"]
+    ti.notes = new_value_for_notes
     session.commit()
-    return task_instance_schema.dump(ti)
+
+    return get_mapped_task_instance(
+        dag_id=dag_id, dag_run_id=dag_run_id, task_id=task_id, map_index=map_index
+    )

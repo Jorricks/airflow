@@ -62,6 +62,7 @@ class TaskInstanceSchema(SQLAlchemySchema):
     queued_dttm = auto_field(data_key="queued_when")
     pid = auto_field()
     executor_config = auto_field()
+    notes = auto_field()
     sla_miss = fields.Nested(SlaMissSchema, dump_default=None)
     rendered_fields = JsonObjectField(dump_default={})
     trigger = fields.Nested(TriggerSchema)

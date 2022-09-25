@@ -273,7 +273,7 @@ def dag_to_grid(dag, dag_runs, session):
             TaskInstance.dag_id == dag.dag_id,
             TaskInstance.run_id.in_([dag_run.run_id for dag_run in dag_runs]),
         )
-        .group_by(TaskInstance.task_id, TaskInstance.run_id, TaskInstance.state)
+        .group_by(TaskInstance.task_id, TaskInstance.run_id, TaskInstance.state, TaskInstance.notes)
         .order_by(TaskInstance.task_id, TaskInstance.run_id)
     )
 

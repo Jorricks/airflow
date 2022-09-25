@@ -28,6 +28,7 @@ import {
   Tbody,
   Tr,
   Td,
+  Thead,
 } from '@chakra-ui/react';
 
 import { MdOutlineAccountTree } from 'react-icons/md';
@@ -42,12 +43,12 @@ import Time from 'src/components/Time';
 import RunTypeIcon from 'src/components/RunTypeIcon';
 
 import URLSearchParamsWrapper from 'src/utils/URLSearchParamWrapper';
+import SetDagTaskNotes from 'src/dag/details/SetDagTaskNotes';
 import MarkFailedRun from './MarkFailedRun';
 import MarkSuccessRun from './MarkSuccessRun';
 import QueueRun from './QueueRun';
 import ClearRun from './ClearRun';
 import DatasetTriggerEvents from './DatasetTriggerEvents';
-import SetDagRunNotes from './SetDagRunNotes';
 
 const dagId = getMetaValue('dag_id');
 const graphUrl = getMetaValue('graph_url');
@@ -101,87 +102,101 @@ const DagRun = ({ runId }: Props) => {
         </Flex>
         <Divider my={3} />
       </Box>
-      <SetDagRunNotes
-        dagId={dagId}
-        runId={runId}
-        initialValue={notes}
-        updateApiDataFunction={updateDagRunNotesCallable}
-        key={dagId + runId}
-      />
-      <Divider my={3} />
-      <Table variant="striped">
-        <Tbody>
-          <Tr>
-            <Td>Status</Td>
-            <Td>
-              <Flex>
-                <SimpleStatus state={state} mx={2} />
-                {state || 'no status'}
-              </Flex>
-            </Td>
-          </Tr>
-          <Tr>
-            <Td>Run ID</Td>
-            <Td><ClipboardText value={runId} /></Td>
-          </Tr>
-          <Tr>
-            <Td>Run type</Td>
-            <Td>
-              <RunTypeIcon runType={runType} />
-              {runType}
-            </Td>
-          </Tr>
-          <Tr>
-            <Td>Run duration</Td>
-            <Td>
-              {formatDuration(getDuration(startDate, endDate))}
-            </Td>
-          </Tr>
-          {lastSchedulingDecision && (
+      <Box p={4}>
+        <SetDagTaskNotes
+          dagId={dagId}
+          runId={runId}
+          taskId={undefined}
+          initialValue={notes}
+          updateApiDataFunction={updateDagRunNotesCallable}
+          key={dagId + runId}
+        />
+      </Box>
+      <Divider my={0} />
+      <Box p={4}>
+        <Table variant="striped">
+          <Thead>
+            <Tr
+              borderBottomWidth={2}
+              borderBottomColor="gray.300"
+              style={{ fontWeight: 'bold', lineHeight: '3em' }}
+            >
+              DAG Run Information
+            </Tr>
+          </Thead>
+          <Tbody>
             <Tr>
-              <Td>Last scheduling decision</Td>
+              <Td>Status</Td>
               <Td>
-                <Time dateTime={lastSchedulingDecision} />
+                <Flex>
+                  <SimpleStatus state={state} mx={2} />
+                  {state || 'no status'}
+                </Flex>
               </Td>
             </Tr>
-          )}
-          {startDate && (
             <Tr>
-              <Td>Started</Td>
+              <Td>Run ID</Td>
+              <Td><ClipboardText value={runId} /></Td>
+            </Tr>
+            <Tr>
+              <Td>Run type</Td>
               <Td>
-                <Time dateTime={startDate} />
+                <RunTypeIcon runType={runType} />
+                {runType}
               </Td>
             </Tr>
-          )}
-          {endDate && (
             <Tr>
-              <Td>Ended</Td>
+              <Td>Run duration</Td>
               <Td>
-                <Time dateTime={endDate} />
+                {formatDuration(getDuration(startDate, endDate))}
               </Td>
             </Tr>
-          )}
-          {dataIntervalStart && dataIntervalEnd && (
-            <>
+            {lastSchedulingDecision && (
               <Tr>
-                <Td>Data interval start</Td>
+                <Td>Last scheduling decision</Td>
                 <Td>
-                  <Time dateTime={dataIntervalStart} />
+                  <Time dateTime={lastSchedulingDecision} />
                 </Td>
               </Tr>
+            )}
+            {startDate && (
               <Tr>
-                <Td>Data interval end</Td>
+                <Td>Started</Td>
                 <Td>
-                  <Time dateTime={dataIntervalEnd} />
+                  <Time dateTime={startDate} />
                 </Td>
               </Tr>
-            </>
-          )}
-        </Tbody>
-      </Table>
-      {runType === 'dataset_triggered' && (
-        <DatasetTriggerEvents runId={runId} />
-      )}
+            )}
+            {endDate && (
+              <Tr>
+                <Td>Ended</Td>
+                <Td>
+                  <Time dateTime={endDate} />
+                </Td>
+              </Tr>
+            )}
+            {dataIntervalStart && dataIntervalEnd && (
+              <>
+                <Tr>
+                  <Td>Data interval start</Td>
+                  <Td>
+                    <Time dateTime={dataIntervalStart} />
+                  </Td>
+                </Tr>
+                <Tr>
+                  <Td>Data interval end</Td>
+                  <Td>
+                    <Time dateTime={dataIntervalEnd} />
+                  </Td>
+                </Tr>
+              </>
+            )}
+          </Tbody>
+        </Table>
+        {runType === 'dataset_triggered' && (
+          <DatasetTriggerEvents runId={runId} />
+        )}
+      </Box>
     </>
   );
 };
