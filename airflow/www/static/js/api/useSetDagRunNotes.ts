@@ -18,9 +18,11 @@
  */
 
 import axios from 'axios';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { getMetaValue } from 'src/utils';
 import useErrorToast from '../utils/useErrorToast';
+import type { GridData } from './useGridData';
+import { emptyGridData } from './useGridData';
 
 const setDagRunNotesURI = getMetaValue('set_dag_run_note');
 
@@ -29,13 +31,30 @@ export default function useSetDagRunNotes(
   runId: string,
   newNotesValue: string,
 ) {
+  const queryClient = useQueryClient();
   const errorToast = useErrorToast();
   const setDagRunNotes = setDagRunNotesURI.replace('_DAG_RUN_ID_', runId);
+
+  const updateGridData = (oldValue: GridData | undefined) => {
+    if (oldValue == null) return emptyGridData;
+    const run = oldValue.dagRuns.find((dr) => dr.runId === runId);
+    if (run) {
+      run.notes = newNotesValue;
+    }
+    return oldValue;
+  };
 
   return useMutation(
     ['setDagRunNotes', dagId, runId],
     () => axios.patch(setDagRunNotes, { notes: newNotesValue }),
     {
+
+      onSuccess: async () => {
+        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+        await queryClient.cancelQueries('gridData');
+        // Optimistically update to the new value
+        queryClient.setQueriesData('gridData', updateGridData);
+      },
       onError: (error: Error) => errorToast({ error }),
     },
   );

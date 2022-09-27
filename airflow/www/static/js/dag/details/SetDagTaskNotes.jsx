@@ -35,7 +35,7 @@ import { useSetDagRunNotes, useSetTaskInstanceNotes } from '../../api';
 const canEdit = getMetaValue('can_edit') === 'True';
 
 const SetDagTaskNotes = ({
-  dagId, runId, taskId, mapIndex, initialValue, updateApiDataFunction,
+  dagId, runId, taskId, mapIndex, initialValue,
 }) => {
   const [notes, setNotes] = useState(initialValue == null ? '' : initialValue);
   const [noteBeforeEdit, setNoteBeforeEdit] = useState('');
@@ -45,7 +45,7 @@ const SetDagTaskNotes = ({
   } = useSetDagRunNotes(dagId, runId, notes);
   const {
     mutateAsync: apiCallToSetTINote, tiIsLoading,
-  } = useSetTaskInstanceNotes(dagId, runId, taskId, (mapIndex || -1), notes);
+  } = useSetTaskInstanceNotes(dagId, runId, taskId, (mapIndex != null ? mapIndex : -1), notes);
 
   const objectIdentifier = (taskId == null) ? 'DAG Run' : 'Task Instance';
 
@@ -56,7 +56,6 @@ const SetDagTaskNotes = ({
     } else {
       await apiCallToSetTINote();
     }
-    updateApiDataFunction(notes);
     changeEditMode(false);
   };
 

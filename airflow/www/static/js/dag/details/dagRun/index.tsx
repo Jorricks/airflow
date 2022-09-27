@@ -73,7 +73,6 @@ const DagRun = ({ runId }: Props) => {
     endDate,
     notes,
   } = run;
-  const updateDagRunNotesCallable = (newNotes: string) => { run.notes = newNotes; };
   const detailsParams = new URLSearchParamsWrapper({
     run_id: runId,
   }).toString();
@@ -109,7 +108,6 @@ const DagRun = ({ runId }: Props) => {
           taskId={undefined}
           mapIndex={undefined}
           initialValue={notes}
-          updateApiDataFunction={updateDagRunNotesCallable}
           key={dagId + runId}
         />
       </Box>

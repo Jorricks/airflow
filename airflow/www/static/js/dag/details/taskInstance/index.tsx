@@ -92,8 +92,6 @@ const TaskInstance = ({
 
   if (!group || !run || !instance) return null;
 
-  const updateTaskInstanceNotesCallable = (newNotes: string) => { instance.notes = newNotes; };
-
   let isPreferedTabDisplayed = false;
 
   switch (preferedTabIndex) {
@@ -173,8 +171,7 @@ const TaskInstance = ({
                     taskId={taskId}
                     mapIndex={instance.mapIndex}
                     initialValue={instance.notes}
-                    updateApiDataFunction={updateTaskInstanceNotesCallable}
-                    key={dagId + runId + taskId + instance.mapIndex}
+                    key={dagId + runId + taskId + instance.mapIndex + instance.notes}
                   />
                   <Divider my={3} />
                 </Box>

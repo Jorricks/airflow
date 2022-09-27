@@ -36,13 +36,13 @@ const dagId = getMetaValue(DAG_ID_PARAM);
 const gridDataUrl = getMetaValue('grid_data_url');
 const urlRoot = getMetaValue('root');
 
-interface GridData {
+export interface GridData {
   dagRuns: DagRun[];
   groups: Task;
   ordering: RunOrdering;
 }
 
-const emptyGridData: GridData = {
+export const emptyGridData: GridData = {
   dagRuns: [],
   groups: {
     id: null,

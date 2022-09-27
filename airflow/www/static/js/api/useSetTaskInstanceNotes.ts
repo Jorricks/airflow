@@ -18,8 +18,11 @@
  */
 
 import axios from 'axios';
-import { useMutation } from 'react-query';
-import { getMetaValue } from 'src/utils';
+import { useMutation, useQueryClient } from 'react-query';
+import { getMetaValue, getTask } from 'src/utils';
+import type { GridData } from 'src/api/useGridData';
+import { emptyGridData } from 'src/api/useGridData';
+import type { API } from 'src/types';
 import useErrorToast from '../utils/useErrorToast';
 
 const setTaskInstancesNotesURI = getMetaValue('set_task_instance_note');
@@ -31,6 +34,7 @@ export default function useSetTaskInstanceNotes(
   mapIndex: number,
   newNotesValue: string,
 ) {
+  const queryClient = useQueryClient();
   const errorToast = useErrorToast();
   // Note: Werkzeug does not like the META URL with an integer. It can not put _MAP_INDEX_ there
   // as it interprets that as the integer. Hence, we pass -1 as the integer. To avoid we replace
@@ -39,11 +43,64 @@ export default function useSetTaskInstanceNotes(
     .replace('_DAG_RUN_ID_', runId)
     .replace('_TASK_ID_', taskId);
 
+  const updateGridDataResult = (oldValue: GridData | undefined) => {
+    if (oldValue == null) return emptyGridData;
+    if (mapIndex !== undefined && mapIndex >= 0) return oldValue;
+    const group = getTask({ taskId, task: oldValue.groups });
+    const instance = group?.instances.find((ti) => ti.runId === runId);
+    if (instance) {
+      instance.notes = newNotesValue;
+    }
+    return oldValue;
+  };
+
+  const updateMappedInstancesResult = (oldValue: API.TaskInstanceCollection | undefined) => {
+    if (oldValue == null) {
+      return {
+        taskInstances: undefined,
+        totalEntries: 0,
+      };
+    }
+    if (mapIndex === undefined || mapIndex < 0) return oldValue;
+    const instance = oldValue?.taskInstances?.find(
+      (ti) => (
+        ti.dagRunId === runId && ti.taskId === taskId && ti.mapIndex === mapIndex
+      ),
+    );
+    if (instance) {
+      instance.notes = newNotesValue;
+    }
+    return oldValue;
+  };
+
+  const updateTaskInstanceResult = (oldValue: API.TaskInstance | undefined) => {
+    if (oldValue == null) throw new Error('Unknown value..');
+    if (oldValue.dagRunId === runId && oldValue.taskId === taskId) {
+      if ((oldValue.mapIndex == null && mapIndex < 0) || oldValue.mapIndex === mapIndex) {
+        oldValue.notes = newNotesValue;
+      }
+    }
+    return oldValue;
+  };
+
   const params = { map_index: mapIndex, notes: newNotesValue };
   return useMutation(
     ['setTaskInstanceNotes', dagId, runId],
     () => axios.patch(url, params),
     {
+      onSuccess: async () => {
+        await queryClient.cancelQueries('gridData');
+        queryClient.setQueriesData('gridData', updateGridDataResult);
+
+        await queryClient.cancelQueries('mappedInstances');
+        queryClient.setQueriesData('mappedInstances', updateMappedInstancesResult);
+
+        await queryClient.cancelQueries('taskInstance');
+        queryClient.setQueriesData(
+          ['taskInstance', dagId, runId, taskId, mapIndex],
+          updateTaskInstanceResult,
+        );
+      },
       onError: (error: Error) => errorToast({ error }),
     },
   );
