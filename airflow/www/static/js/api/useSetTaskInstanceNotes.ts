@@ -19,20 +19,30 @@
 
 import axios from 'axios';
 import { useMutation } from 'react-query';
+import { getMetaValue } from 'src/utils';
 import useErrorToast from '../utils/useErrorToast';
+
+const setTaskInstancesNotesURI = getMetaValue('set_task_instance_note');
 
 export default function useSetTaskInstanceNotes(
   dagId: string,
   runId: string,
   taskId: string,
+  mapIndex: number,
   newNotesValue: string,
 ) {
   const errorToast = useErrorToast();
-  const setTaskInstanceNotes = `/api/v1/dags/${dagId}/dagRuns/${runId}/taskInstances/${taskId}/setNote`;
+  // Note: Werkzeug does not like the META URL with an integer. It can not put _MAP_INDEX_ there
+  // as it interprets that as the integer. Hence, we pass -1 as the integer. To avoid we replace
+  // other stuff, we add _TASK_ID_ to the replacement query.
+  const url = setTaskInstancesNotesURI
+    .replace('_DAG_RUN_ID_', runId)
+    .replace('_TASK_ID_', taskId);
 
+  const params = { map_index: mapIndex, notes: newNotesValue };
   return useMutation(
     ['setTaskInstanceNotes', dagId, runId],
-    () => axios.patch(setTaskInstanceNotes, { notes: newNotesValue }),
+    () => axios.patch(url, params),
     {
       onError: (error: Error) => errorToast({ error }),
     },

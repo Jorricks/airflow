@@ -19,16 +19,18 @@
 
 import axios from 'axios';
 import { useMutation } from 'react-query';
+import { getMetaValue } from 'src/utils';
 import useErrorToast from '../utils/useErrorToast';
 
-export default function UseSetDagRunNotes(
+const setDagRunNotesURI = getMetaValue('set_dag_run_note');
+
+export default function useSetDagRunNotes(
   dagId: string,
   runId: string,
   newNotesValue: string,
 ) {
   const errorToast = useErrorToast();
-  const setDagRunNotes = (`/api/v1/dags/${dagId}/dagRuns/_DAG_RUN_ID_/setNote`)
-    .replace('_DAG_RUN_ID_', runId);
+  const setDagRunNotes = setDagRunNotesURI.replace('_DAG_RUN_ID_', runId);
 
   return useMutation(
     ['setDagRunNotes', dagId, runId],

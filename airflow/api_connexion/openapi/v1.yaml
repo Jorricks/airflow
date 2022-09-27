@@ -2912,7 +2912,6 @@ components:
           readOnly: true
           nullable: true
 
-
     Pool:
       description: The pool
       type: object
@@ -4057,6 +4056,9 @@ components:
     SetTaskInstanceNote:
       type: object
       properties:
+        map_index:
+          description: The map_index of the TaskInstance.
+          type: integer
         notes:
           description: The custom note to set for this Task Instance.
           type: string

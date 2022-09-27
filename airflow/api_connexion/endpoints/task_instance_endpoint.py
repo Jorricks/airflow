@@ -556,12 +556,14 @@ def post_set_task_instances_state(*, dag_id: str, session: Session = NEW_SESSION
 )
 @provide_session
 def set_task_instance_note(
-    *, dag_id: str, dag_run_id: str, task_id: str, map_index: int = -1, session: Session = NEW_SESSION
+    *, dag_id: str, dag_run_id: str, task_id: str, session: Session = NEW_SESSION
 ) -> APIResponse:
     """Set the note for a dag run."""
     try:
         post_body = set_task_instance_note_form_schema.load(get_json_request_dict())
         new_value_for_notes = post_body["notes"]
+        # Note: We can't add map_index to the url as subpaths can't start with dashes.
+        map_index = post_body["map_index"]
     except ValidationError as err:
         raise BadRequest(detail=str(err))
 
@@ -570,8 +572,12 @@ def set_task_instance_note(
         .filter(TI.dag_id == dag_id)
         .filter(TI.run_id == dag_run_id)
         .filter(TI.task_id == task_id)
-        .filter(TI.map_index == map_index)
     )
+    if map_index == -1:
+        query = query.filter(or_(TI.map_index == -1, TI.map_index is None))
+    else:
+        query = query.filter(TI.map_index == map_index)
+
     try:
         ti: TI | None = query.one_or_none()
     except MultipleResultsFound:
@@ -585,6 +591,9 @@ def set_task_instance_note(
     ti.notes = new_value_for_notes
     session.commit()
 
-    return get_mapped_task_instance(
-        dag_id=dag_id, dag_run_id=dag_run_id, task_id=task_id, map_index=map_index
-    )
+    if map_index == -1:
+        return get_task_instance(dag_id=dag_id, dag_run_id=dag_run_id, task_id=task_id)
+    else:
+        return get_mapped_task_instance(
+            dag_id=dag_id, dag_run_id=dag_run_id, task_id=task_id, map_index=map_index
+        )

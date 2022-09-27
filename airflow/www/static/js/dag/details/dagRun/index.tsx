@@ -107,6 +107,7 @@ const DagRun = ({ runId }: Props) => {
           dagId={dagId}
           runId={runId}
           taskId={undefined}
+          mapIndex={undefined}
           initialValue={notes}
           updateApiDataFunction={updateDagRunNotesCallable}
           key={dagId + runId}

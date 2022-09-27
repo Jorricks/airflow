@@ -191,6 +191,8 @@ class TaskInstanceReferenceCollectionSchema(Schema):
 class SetTaskInstanceNoteFormSchema(Schema):
     """Schema for settings a note for a TaskInstance"""
 
+    # Note: We can't add map_index to the url as subpaths can't start with dashes.
+    map_index = fields.Int(allow_none=False)
     notes = fields.String(allow_none=True, validate=validate.Length(max=1000))
 
 

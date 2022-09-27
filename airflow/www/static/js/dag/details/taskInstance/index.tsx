@@ -165,17 +165,20 @@ const TaskInstance = ({
                   mapIndexes={actionsMapIndexes}
                 />
               )}
-              <Box mt={6}>
-                <SetDagTaskNotes
-                  dagId={dagId}
-                  runId={runId}
-                  taskId={taskId}
-                  initialValue={instance.notes}
-                  updateApiDataFunction={updateTaskInstanceNotesCallable}
-                  key={dagId + runId + taskId}
-                />
-              </Box>
-              <Divider my={3} />
+              {!isGroupOrMappedTaskSummary && (
+                <Box mt={6}>
+                  <SetDagTaskNotes
+                    dagId={dagId}
+                    runId={runId}
+                    taskId={taskId}
+                    mapIndex={instance.mapIndex}
+                    initialValue={instance.notes}
+                    updateApiDataFunction={updateTaskInstanceNotesCallable}
+                    key={dagId + runId + taskId + instance.mapIndex}
+                  />
+                  <Divider my={3} />
+                </Box>
+              )}
               <Details instance={instance} group={group} dagId={dagId} />
               {!isMapped && (
                 <ExtraLinks

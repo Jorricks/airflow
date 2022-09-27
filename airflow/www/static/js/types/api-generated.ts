@@ -1784,6 +1784,8 @@ export interface components {
       new_state?: "success" | "failed";
     };
     SetTaskInstanceNote: {
+      /** @description The map_index of the TaskInstance. */
+      map_index?: number;
       /** @description The custom note to set for this Task Instance. */
       notes?: string;
     };

@@ -27,7 +27,7 @@ export default function useDataset({ uri }: API.GetDatasetVariables) {
   return useQuery(
     ['dataset', uri],
     () => {
-      const datasetUrl = `${getMetaValue('datasets_api') || '/api/v1/datasets'}/${encodeURIComponent(uri)}`;
+      const datasetUrl = `${getMetaValue('datasets_api')}/${encodeURIComponent(uri)}`;
       return axios.get<AxiosResponse, API.Dataset>(datasetUrl);
     },
   );
