@@ -95,7 +95,7 @@ const TaskInstances = ({
                 group={task}
                 onSelect={onSelect}
                 isActive={hoveredTaskState === undefined || hoveredTaskState === instance.state}
-                containsNotes={instance.notes != null && instance.notes !== ''}
+                containsNotes={!!instance.notes}
               />
             )
             : <Box width={boxSizePx} data-testid="blank-task" />}
