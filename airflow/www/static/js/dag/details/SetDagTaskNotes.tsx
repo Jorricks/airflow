@@ -27,29 +27,39 @@ import {
   Box,
   Button,
   Text,
+  Textarea,
 } from '@chakra-ui/react';
-import TextareaAutosize from 'react-textarea-autosize';
+import ResizeTextarea from 'react-textarea-autosize';
 import { getMetaValue } from '../../utils';
 import { useSetDagRunNotes, useSetTaskInstanceNotes } from '../../api';
+
+interface Props {
+  dagId: string;
+  runId: string;
+  taskId: string | undefined;
+  mapIndex: number | undefined;
+  initialValue: string | undefined | null;
+}
 
 const canEdit = getMetaValue('can_edit') === 'True';
 
 const SetDagTaskNotes = ({
   dagId, runId, taskId, mapIndex, initialValue,
-}) => {
+}: Props) => {
   const [notes, setNotes] = useState(initialValue == null ? '' : initialValue);
   const [noteBeforeEdit, setNoteBeforeEdit] = useState('');
   const [editMode, changeEditMode] = useState(false);
+  const tiStr = (taskId != null ? taskId : '');
   const {
-    mutateAsync: apiCallToSetDagRunNote, dagRunIsLoading,
+    mutateAsync: apiCallToSetDagRunNote, isLoading: dagRunIsLoading,
   } = useSetDagRunNotes(dagId, runId, notes);
   const {
-    mutateAsync: apiCallToSetTINote, tiIsLoading,
-  } = useSetTaskInstanceNotes(dagId, runId, taskId, (mapIndex != null ? mapIndex : -1), notes);
+    mutateAsync: apiCallToSetTINote, isLoading: tiIsLoading,
+  } = useSetTaskInstanceNotes(dagId, runId, tiStr, (mapIndex != null ? mapIndex : -1), notes);
 
   const objectIdentifier = (taskId == null) ? 'DAG Run' : 'Task Instance';
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (taskId == null) {
       await apiCallToSetDagRunNote();
@@ -76,9 +86,14 @@ const SetDagTaskNotes = ({
           {editMode ? (
             <form onSubmit={handleSubmit}>
               <div>
-                <TextareaAutosize
-                  minRows={1}
+                <Textarea
+                  minH="unset"
+                  overflow="hidden"
+                  w="100%"
+                  resize="none"
+                  minRows={3}
                   maxRows={10}
+                  as={ResizeTextarea}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   style={{ width: '100%' }}
