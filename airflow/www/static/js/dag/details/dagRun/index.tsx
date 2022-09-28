@@ -28,6 +28,7 @@ import {
   Tbody,
   Tr,
   Td,
+  Thead,
 } from '@chakra-ui/react';
 
 import { MdOutlineAccountTree } from 'react-icons/md';
@@ -43,6 +44,7 @@ import Time from 'src/components/Time';
 import RunTypeIcon from 'src/components/RunTypeIcon';
 
 import URLSearchParamsWrapper from 'src/utils/URLSearchParamWrapper';
+import SetDagTaskNotes from 'src/dag/details/SetDagTaskNotes';
 import MarkFailedRun from './MarkFailedRun';
 import MarkSuccessRun from './MarkSuccessRun';
 import QueueRun from './QueueRun';
@@ -73,6 +75,7 @@ const DagRun = ({ runId }: Props) => {
     externalTrigger,
     conf,
     confIsJson,
+    notes,
   } = run;
   const graphParams = new URLSearchParamsWrapper({
     execution_date: executionDate,
@@ -97,6 +100,17 @@ const DagRun = ({ runId }: Props) => {
         </Flex>
         <Divider my={3} />
       </Box>
+      <Box p={4}>
+        <SetDagTaskNotes
+          dagId={dagId}
+          runId={runId}
+          taskId={undefined}
+          mapIndex={undefined}
+          initialValue={notes}
+          key={dagId + runId}
+        />
+      </Box>
+      <Divider my={0} />
       <Table variant="striped">
         <Tbody>
           <Tr>
