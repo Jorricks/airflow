@@ -2549,6 +2549,7 @@ class DAG(LoggingMixin):
         dag_hash: str | None = None,
         creating_job_id: int | None = None,
         data_interval: tuple[datetime, datetime] | None = None,
+        notes: str | None = None,
     ):
         """
         Creates a dag run from this dag including the tasks associated with this dag.
@@ -2565,6 +2566,7 @@ class DAG(LoggingMixin):
         :param session: database session
         :param dag_hash: Hash of Serialized DAG
         :param data_interval: Data interval of the DagRun
+        :param notes: A custom note for the DAGRun.
         """
         logical_date = timezone.coerce_datetime(execution_date)
 
@@ -2623,6 +2625,7 @@ class DAG(LoggingMixin):
             dag_hash=dag_hash,
             creating_job_id=creating_job_id,
             data_interval=data_interval,
+            notes=notes,
         )
         session.add(run)
         session.flush()
